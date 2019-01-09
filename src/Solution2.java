@@ -5,15 +5,16 @@ public class Solution2 {
 
 
     public static void main(String[] args) {
-        ListNode listNode1 = new ListNode(1);
-        listNode1.next = new ListNode(8);
+        ListNode listNode1 = new ListNode(9);
 //        listNode1.next.next = new ListNode(3);
 
-        ListNode listNode2 = new ListNode(0);
+        ListNode listNode2 = new ListNode(1);
+        listNode2.next = new ListNode(9);
 //        listNode2.next = new ListNode(6);
-//        listNode2.next.next = new ListNode(4);
+//        listNode2.next.next = new ListNode(4);\
+        addTwoNumbers2(listNode1, listNode2);
 
-        System.out.println(addTwoNumbers1(listNode1, listNode2));
+        System.out.println(addTwoNumbers2(listNode1, listNode2));
     }
 
     static class ListNode {
@@ -44,6 +45,34 @@ public class Solution2 {
         return combineArr2Node(resultIntValue);
     }
 
+    public static ListNode addTwoNumbers2(ListNode l1, ListNode l2) {
+        int carry =0;
+
+        ListNode newHead = new ListNode(0);
+        ListNode p1 = l1, p2 = l2, p3=newHead;
+
+        while(p1 != null || p2 != null){
+            if(p1 != null){
+                carry += p1.val;
+                p1 = p1.next;
+            }
+
+            if(p2 != null){
+                carry += p2.val;
+                p2 = p2.next;
+            }
+
+            p3.next = new ListNode(carry%10);
+            p3 = p3.next;
+            carry /= 10;
+        }
+
+        if(carry==1)
+            p3.next=new ListNode(1);
+
+        return newHead.next;
+    }
+
     private static String getReverseInputString(ListNode l2) {
         List<Integer> list2 = new ArrayList<>();
         extractNode(l2, list2);
@@ -70,23 +99,26 @@ public class Solution2 {
         String resultString = stringBuilder.reverse().toString();
         char[] resultChar = resultString.toCharArray();
         int currentIndex = 0;
-        ListNode listNode = null;
-        genNode(resultChar, currentIndex,listNode);
+        ListNode listNode = new ListNode(0);
+        boolean isRootNull = true;
+        genNode(resultChar, currentIndex,listNode,isRootNull);
         return listNode;
     }
 
-    public static void genNode(char[] chars, int currentIndex, ListNode listNode) {
+    public static void genNode(char[] chars, int currentIndex, ListNode listNode,boolean isRootNull) {
         int length = chars.length;
         int nextindex = currentIndex + 1;
         if (length > currentIndex) {
             int value = Integer.valueOf(String.valueOf(chars[currentIndex]));
-            if (value != 0 && listNode == null) {
-               listNode = new ListNode(value);
-            }else {
+            if (isRootNull && value != 0) {
+                listNode.val = value;
+                isRootNull = false;
+            } else {
                 listNode.next = new ListNode(value);
             }
-            genNode(chars,nextindex,listNode.next);
+            genNode(chars,nextindex,listNode,isRootNull);
         }
+
     }
 
 }
